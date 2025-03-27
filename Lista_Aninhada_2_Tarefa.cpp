@@ -95,6 +95,10 @@ void insertDisciplina(TLista *lista) {
 
 }
 
+void deleteDiscipline(TLista *lista) {
+
+	
+}
 
 int main(){
 	TLista *lista;
