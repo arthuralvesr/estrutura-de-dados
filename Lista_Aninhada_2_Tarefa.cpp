@@ -101,6 +101,8 @@ void insertDisciplina(TLista *lista) {
 void deleteDiscipline(TLista *lista) {
 
 
+
+
 }
 
 void insertCurso(TLista *lista) {
