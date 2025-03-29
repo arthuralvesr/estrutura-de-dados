@@ -42,12 +42,11 @@ void inicializa(TLista *lista){
 int menu(){
 	
 	int opcao;
-	system("CLS");
 	printf("\n\n\n\t\t=======| MENU |=======\n\n");
 	
 	printf("\t0 - SAIR (Encerrar Aplicacao).\n\n");
-	printf("\t1 - Inserir DISCIPLINAS.\n");
-	printf("\t2 - Excluir DISCIPLINAS.\n\n");
+	printf("\t1 - Inserir DISCIPLINA.\n");
+	printf("\t2 - Excluir DISCIPLINA.\n\n");
 	printf("\t3 - Inserir CURSOS.\n");
 	printf("\t4 - Excluir CURSOS.\n");
 	printf("\t5 - Registrar PRE-REQUISITOS para DISCIPLINA.\n");
@@ -95,14 +94,64 @@ void insertDisciplina(TLista *lista) {
 		atual->prox = nova;
 
 	}
-
 }
 
-void deleteDiscipline(TLista *lista) {
+void deleteDisciplina(TLista *lista) {
+	string disciplina;
+	TDisciplina *atual, *anterior;
 
+	if (lista == NULL) {
+		printf("\nNenhum ator cadastrado!");
+		return;
+	}
 
+	printf("\nEXCLUIR DISCIPLINA");
+	printf("\nInsira a disciplina a ser excluida: ");
+	fflush(stdin);
+	gets(disciplina);
 
+	atual = lista->disciplinas;
+	anterior = NULL;
 
+	while (atual != NULL && strcmp(atual->nome,disciplina) != 0) {
+		anterior = atual;
+		atual = atual->prox;
+	}
+	
+	if (atual == NULL) {
+		printf("Não existe NENHUMA disciplina CADASTRADA!");
+		system("pause");
+		return;
+	}
+
+	if (anterior == NULL) {
+		lista->disciplinas = atual->prox;
+	} else {
+		anterior->prox = atual->prox;
+	}
+
+	printf("DISCIPLINA excluida com SUCESSO!");
+}
+
+void listDisciplina(TLista *lista) {
+	TDisciplina *atual;
+	int i = 1;
+
+	if (lista->disciplinas == NULL) {
+		printf("Não existe NENHUMA DISCIPLNAS CADASTRADA!");
+		return;
+	}
+	
+	atual = lista->disciplinas;
+
+	while (atual != NULL) {
+		printf("\n\n%d - %s" , i, atual->nome);
+		printf("\nCarga Horaria: %d" , atual->cargaHoraria);
+		
+		atual = atual->prox;
+		i++;
+	}
+	
 }
 
 void insertCurso(TLista *lista) {
@@ -130,10 +179,10 @@ void insertCurso(TLista *lista) {
 }
 
 int main(){
-	TLista *lista;
+	TLista lista;
 	int opcao;
-
-	inicializa(lista);
+	
+	inicializa(&lista);
 
 	do{
 		opcao = menu();
@@ -142,13 +191,13 @@ int main(){
 			case 0: 
 				break;
 			case 1: 
-				insertDisciplina(lista);
+				insertDisciplina(&lista);
 				break;
 			case 2: 
-				deleteDiscipline(lista); 
+				deleteDisciplina(&lista); 
 				break;
 			case 3: 
-				insertCurso(lista)
+				insertCurso(&lista);
 				break;
 			case 4: 
 				break;
@@ -156,6 +205,13 @@ int main(){
 				break;
 			case 6: 
 				break;
+			case 7: 
+				break;
+			case 8: 
+				break;
+			case 9:
+				listDisciplina(&lista); 
+				break;	
 		}
 		
 	}while(opcao != 0);
