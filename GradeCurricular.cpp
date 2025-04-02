@@ -231,6 +231,63 @@ void listCurso(TLista *lista) {
 	}
 }
 
+void registerPreRequisito(TLista *lista) {
+	string pre, principal;
+	TPreRequisito *preReq, *novo;
+	TDisciplina *discPrincipal, *discPre;
+	
+	if (lista->disciplinas == NULL ) {
+		printf("Não existe NENHUMA DISCIPLINA cadastrada!");
+		return;
+	}
+
+	printf("\nREGISTRAR PRE REQUISITO");
+
+	listDisciplina(lista);
+	printf("\n\nInsira a disciplina PAI: ");
+	scanf("%s" , &principal);
+
+	discPrincipal = searchDisciplina(lista, principal);
+
+	if (discPrincipal == NULL) {
+		printf("NÃO EXISTE essa DISCIPLINA cadastrada!");
+		return;
+	}
+
+	printf("\n\nInsira a disciplina que terá PRE REQUISITO: ");
+	scanf("%s" , &pre);
+
+	discPre = searchDisciplina(lista, pre);
+
+	if (discPre == NULL) {
+		printf("NÃO EXISTE essa DISCIPLINA cadastrada!");
+		return;
+	}
+
+	preReq = discPrincipal->preRequisito;
+	novo->prox = discPre;
+
+	discPrincipal->preRequisito = novo;
+
+
+}
+
+TDisciplina *searchDisciplina(TLista *lista, string disc1) {
+	TDisciplina *atual;
+
+	atual = lista->disciplinas;
+
+	while (atual->prox != NULL)	{
+		if (strcmp(atual->nome, disc1) == 0) {
+			return atual;
+		}
+
+		atual = atual->prox;
+	}
+
+	return NULL;
+}
+
 int main(){
 	TLista lista;
 	int opcao;
