@@ -19,7 +19,7 @@ typedef struct tipoPreRequisito {
 typedef struct tipoGrade {
 	TDisciplina *disciplina;
 	int periodo;
-	tipoGrade *prox;	
+	tipoGrade *prox;
 }TGrade;
 
 typedef struct tipoCurso {
@@ -67,6 +67,39 @@ int menu(){
 	}
 	return opcao;
 }
+TDisciplina* searchDisciplina(TLista *lista, char *disc) {
+	TDisciplina *atual;
+
+	atual = lista->disciplinas;
+
+	while (atual!= NULL)	{
+		if (strcmp(atual->nome, disc) == 0) {
+			return atual;
+		}
+
+		atual = atual->prox;
+	}
+
+	printf("Nenhuma DISCIPLINA ENCONTRADO!");
+	return NULL;
+}
+
+TCurso* searchCurso(TLista *lista, string curso) {
+	TCurso *atual;
+
+	atual = lista->cursos;
+
+	while (atual != NULL)	{
+		if (strcmp(atual->nome, curso) == 0) {
+			return atual;
+		}
+
+		atual = atual->prox;
+	}
+
+	printf("Nenhum CURSO ENCONTRADO!");
+	return NULL;
+}
 
 void insertDisciplina(TLista *lista) {
 	TDisciplina *nova, *atual;
@@ -108,15 +141,14 @@ void deleteDisciplina(TLista *lista) {
 	atual = lista->disciplinas;
 	anterior = NULL;
 
-	while (atual != NULL && strcmp(atual->nome,disciplina) != 0) {
-		anterior = atual;
-		atual = atual->prox;
-	}
-	
 	if (atual == NULL) {
 		printf("Não existe NENHUMA disciplina CADASTRADA!");
 		system("pause");
 		return;
+	}
+	while (atual != NULL && strcmp(atual->nome,disciplina) != 0) {
+		anterior = atual;
+		atual = atual->prox;
 	}
 
 	if (anterior == NULL) {
@@ -186,14 +218,14 @@ void deleteCurso(TLista *lista) {
 	anterior = NULL;
 	atual = lista->cursos;
 
-	while (atual != NULL && strcmp(atual->nome, curso) != 0) {
-		anterior = atual;
-		atual = atual->prox;
-	}
-
 	if (lista->cursos == NULL) {
 		printf("Nenhum CURSO cadastrado!");
 		return;
+	}
+
+	while (atual != NULL && strcmp(atual->nome, curso) != 0) {
+		anterior = atual;
+		atual = atual->prox;
 	}
 
 	if (anterior == NULL) {
@@ -211,6 +243,8 @@ void deleteCurso(TLista *lista) {
 		}
 		
 	}
+
+	free(atual);
 }
 
 void listCurso(TLista *lista) {
@@ -264,28 +298,51 @@ void registerPreRequisito(TLista *lista) {
 		return;
 	}
 
-	preReq = discPrincipal->preRequisito;
-	novo->prox = discPre;
+	novo = (TPreRequisito*) malloc(sizeof(TPreRequisito));
+	novo->preRequisito = discPre;
+	novo->prox = discPrincipal->preRequisito;
 
 	discPrincipal->preRequisito = novo;
 
-
 }
 
-TDisciplina *searchDisciplina(TLista *lista, string disc1) {
-	TDisciplina *atual;
+void registerGrade(TLista *lista){
+	TGrade *novaGrade = (TGrade *)malloc(sizeof(TGrade));
+	TCurso *verCurso;
+	TDisciplina *verDisc;
+	string disc, curso;
+	int periodo;
 
-	atual = lista->disciplinas;
-
-	while (atual->prox != NULL)	{
-		if (strcmp(atual->nome, disc1) == 0) {
-			return atual;
-		}
-
-		atual = atual->prox;
+	if (lista->cursos == NULL) {
+		printf("Não existe nenhum CURSO CADASTRADO!");
+		return;
+	}
+	
+	if (lista->disciplinas == NULL) {
+		printf("Não existe nenhuma DISCIPLINA CADASTRADA!");
+		return;
 	}
 
-	return NULL;
+	listCurso(lista);
+	listDisciplina(lista);
+
+	printf("Insira o CURSO (indice) a ser INSERIDA na GRADE CURRICULAR: ");
+	scanf("%s" , curso);
+
+	printf("Insira o DISCIPLINA (indice) a ser INSERIDA na GRADE CURRICULAR: ");
+	scanf("%s" , disc);
+
+	printf("Insira o PERIODO: ");
+	scanf("%d" , periodo);
+
+	verCurso = searchCurso(lista, curso);
+	verDisc = searchDisciplina(lista, disc);
+
+	novaGrade->disciplina = verDisc;
+	novaGrade->periodo = periodo;
+
+	novaGrade->prox = verCurso->gradeCurricular;
+	verCurso->gradeCurricular = novaGrade;
 }
 
 int main(){
@@ -303,9 +360,9 @@ int main(){
 			case 2: deleteDisciplina(&lista); break;
 			case 3: insertCurso(&lista); break;
 			case 4: deleteCurso(&lista); break;
-			case 5: break;
+			case 5: registerPreRequisito(&lista); break;
 			case 6: break;
-			case 7: break;
+			case 7: registerGrade(&lista); break;
 			case 8: break;
 			case 9: listDisciplina(&lista); break;
 			case 10: listCurso(&lista); break;	
