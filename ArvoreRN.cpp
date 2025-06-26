@@ -71,35 +71,56 @@ void inserir(Arvore *ar, int num){
 void ajustarInsercao(Arvore *ar, No *nv){
 
     while(nv->pai->cor == VERMELHO){
-        No *tio = nv->pai->pai->esquerda;
+        
+        if(nv->pai == nv->pai->pai->esquerda){
 
-        if(tio->cor == VERMELHO){
-            nv->pai->cor = PRETO;
-            tio->cor = PRETO;
-            nv->pai->pai->cor = VERMELHO;
-            
-            nv = nv->pai->pai; // Passa o problema pro vo
-        } else {
+            No *tio = nv->pai->pai->direita;
 
-            if(nv = nv->pai->direita){
-                rotEsquerda(ar, nv);
+            if(tio->cor == VERMELHO){
+                nv->pai->cor = PRETO;
+                tio->cor = PRETO;
+                nv->pai->pai->cor = VERMELHO;
+                
+                nv = nv->pai->pai; // Passa o problema pro vo
+            } else {
+
+                if(nv == nv->pai->direita){
+                    
+                    rotEsquerda(ar, nv);
+                } 
+
+                rotDireita(ar, nv);
             } 
+        } else {
+            
+            No *tio = nv->pai->pai->esquerda;
 
-            rotDireita(ar, nv);
         }
     }
-    
-
-
-
-
 }
 
 No* rotDireita(Arvore *ar, No *x){
     No *y = x->esquerda;
     x->esquerda = y->direita;
 
-    if()
+    if(y->direita != ar->NIL){  // verifica se o filho tem mais filho e define como o pai dele sendo o novo pai
+        y->direita->pai = x;
+    }
+
+    y->pai = x->pai;
+
+    if(x->pai == ar->NIL){ // raiz geral (topo da arvore)
+        ar->raiz = y;
+    } else if(x == x->pai->esquerda){
+        x->pai->esquerda = y;
+    } else {
+        x->pai->direita = y;
+    }
+
+    y->direita = x;
+    x->pai = y;
+
+    return x;
 }
 
 No* rotEsquerda(Arvore *ar, No *x){
@@ -108,7 +129,7 @@ No* rotEsquerda(Arvore *ar, No *x){
 
     if(y->esquerda != ar->NIL){
         y->esquerda->pai = x;
-    }
+    } 
 
     y->pai = x->pai;
 
