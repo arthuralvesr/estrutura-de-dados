@@ -39,7 +39,8 @@ No* criarNo(Arvore *ar, int num){
 
 void inserir(Arvore *ar, int num){
     No *aux = ar->raiz;
-    No *paiAux = ar->NIL;
+    No *paiAux = ar->NIL; //Inicializa para se a arvore estiver vazia, o pai da primeira raiz aponta para NIL
+    No *novo;
 
     while (aux != ar->NIL) {
         paiAux = aux;
@@ -48,16 +49,82 @@ void inserir(Arvore *ar, int num){
             aux = aux->direita;
         } else if (num > aux->chave){
             aux = aux->esquerda;
+        } else {
+            printf("Número já existente!");
+            return;
         }
     }
+
+    novo = criarNo(ar, num);
+
+    if(paiAux == ar->NIL){ //Arvore vazia
+        ar->raiz = novo;
+    } else if(num < paiAux->chave){
+        paiAux->esquerda = novo;
+    } else {
+        paiAux->direita = novo;
+    }
+
+    ajustarInsercao(ar, novo);
 }
 
-No* rotDireita(){
+void ajustarInsercao(Arvore *ar, No *nv){
+
+    while(nv->pai->cor == VERMELHO){
+        No *tio = nv->pai->pai->esquerda;
+
+        if(tio->cor == VERMELHO){
+            nv->pai->cor = PRETO;
+            tio->cor = PRETO;
+            nv->pai->pai->cor = VERMELHO;
+            
+            nv = nv->pai->pai; // Passa o problema pro vo
+        } else {
+
+            if(nv = nv->pai->direita){
+                rotEsquerda(ar, nv);
+            } 
+
+            rotDireita(ar, nv);
+        }
+    }
+    
+
+
+
 
 }
 
-No* rotEsquerda(){
+No* rotDireita(Arvore *ar, No *x){
+    No *y = x->esquerda;
+    x->esquerda = y->direita;
 
+    if()
+}
+
+No* rotEsquerda(Arvore *ar, No *x){
+    No *y = x->direita;
+    x->direita = y->esquerda;
+
+    if(y->esquerda != ar->NIL){
+        y->esquerda->pai = x;
+    }
+
+    y->pai = x->pai;
+
+    
+    if(x->pai == ar->NIL){ // raiz geral
+        ar->raiz = y;
+    } else if(x == x->pai->esquerda){ // filho esquerda
+        x->pai->esquerda = y;
+    } else { // filho direita
+        x->pai->direita = y;
+    }
+
+    y->esquerda = x; 
+    x->pai = y;
+
+    return x;
 }
 
 int main(){
